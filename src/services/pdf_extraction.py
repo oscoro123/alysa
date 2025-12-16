@@ -1,56 +1,66 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
-import pdfplumber
-import pytesseract
-from pdf2image import convert_from_bytes
-import tempfile
-import os
+import fitz  # PyMuPDF
+import re
+from typing import List, Dict
+from services.requirement_filter import extract_requirement_candidates
 
-router = APIRouter(tags=["PDF"])
+SENTENCE_SPLIT_REGEX = re.compile(
+    r'(?<=[.!?])\s+(?=[A-ZÅÄÖ])'
+)
 
-@router.post("/upload-pdf")
-async def upload_pdf(file: UploadFile = File(...)):
-    if not file.filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Endast PDF-filer stöds")
+def split_into_paragraphs(text: str) -> List[str]:
+    """
+    Enkel men robust styckesdelning:
+    - dubbla radbrytningar
+    - fallback: långa rader
+    """
+    raw = re.split(r"\n\s*\n", text)
+    paragraphs = [p.replace("\n", " ").strip() for p in raw]
+    return [p for p in paragraphs if len(p) > 20]
 
-    pdf_bytes = await file.read()
 
-    extracted_pages = []
-    used_ocr = False
+def extract_pdf_data(pdf_bytes: bytes, filename: str) -> Dict:
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 
-    # --- Försök textbaserad extraktion ---
-    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-    try:
-        tmp.write(pdf_bytes)
-        tmp.close()
+    structured_pages = []
 
-        with pdfplumber.open(tmp.name) as pdf:
-            for i, page in enumerate(pdf.pages):
-                text = page.extract_text() or ""
-                extracted_pages.append({
-                    "page": i + 1,
-                    "text": text.strip()
+    for page_index, page in enumerate(doc):
+        text = page.get_text()
+
+        paragraphs = split_into_paragraphs(text)
+        para_objs = []
+
+        from services.pdf_extraction import split_into_sentences
+
+        sentence_counter = 1
+
+        for para in paragraphs:
+            sentences = split_into_sentences(para)
+
+            for sentence in sentences:
+                para_objs.append({
+                    "id": f"p{page_index+1}_{sentence_counter:03d}",
+                    "text": sentence
                 })
-    finally:
-        os.unlink(tmp.name)
+                sentence_counter += 1
 
-    total_text_length = sum(len(p["text"]) for p in extracted_pages)
+        structured_pages.append({
+            "page": page_index + 1,
+            "paragraphs": para_objs
+        })
 
-    # --- OCR fallback ---
-    if total_text_length < 100:
-        used_ocr = True
-        extracted_pages = []
-
-        images = convert_from_bytes(pdf_bytes)
-        for i, image in enumerate(images):
-            text = pytesseract.image_to_string(image, lang="swe+eng")
-            extracted_pages.append({
-                "page": i + 1,
-                "text": text.strip()
-            })
+    candidates = extract_requirement_candidates(structured_pages)
 
     return {
-        "filename": file.filename,
-        "page_count": len(extracted_pages),
-        "used_ocr": used_ocr,
-        "pages": extracted_pages
+        "filename": filename,
+        "page_count": len(doc),
+        "used_ocr": False,
+        "candidates": candidates
     }
+
+def split_into_sentences(text: str) -> list[str]:
+    """
+    Delar text i meningar på ett relativt säkert sätt
+    för svenska juridiska texter.
+    """
+    sentences = SENTENCE_SPLIT_REGEX.split(text)
+    return [s.strip() for s in sentences if len(s.strip()) > 10]
