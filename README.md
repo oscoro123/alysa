@@ -1,4 +1,4 @@
-#alysa
+# alysa
 
 Projektet består av en frontend där användaren laddar upp PDF-filer och en lokal backend som extraherar text, använder OCR vid behov och returnerar strukturerad JSON redo för vidare analys. AI-modellen är ännu inte inkopplad; nuvarande pipeline säkerställer korrekt och pålitlig rådata.
 
