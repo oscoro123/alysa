@@ -1,66 +1,72 @@
 import fitz  # PyMuPDF
 import re
 from typing import List, Dict
-from services.requirement_filter import extract_requirement_candidates
 
-SENTENCE_SPLIT_REGEX = re.compile(
-    r'(?<=[.!?])\s+(?=[A-ZÅÄÖ])'
-)
+SKALL_TERMS = [
+    "skall", "ska", "måste", "krävs", "åligger", "får ej", "icke", "förbinder sig att"
+]
 
-def split_into_paragraphs(text: str) -> List[str]:
-    """
-    Enkel men robust styckesdelning:
-    - dubbla radbrytningar
-    - fallback: långa rader
-    """
-    raw = re.split(r"\n\s*\n", text)
-    paragraphs = [p.replace("\n", " ").strip() for p in raw]
-    return [p for p in paragraphs if len(p) > 20]
+BOR_TERMS = [
+    "bör", "borde", "önskvärt", "meriterande", "eftersträvas", "ser gärna", "bedöms positivt"
+]
 
 
-def extract_pdf_data(pdf_bytes: bytes, filename: str) -> Dict:
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+def split_into_sentences(text: str) -> List[str]:
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    return [s.strip() for s in sentences if len(s.strip()) > 10]
 
-    structured_pages = []
 
-    for page_index, page in enumerate(doc):
-        text = page.get_text()
+def classify_sentence(sentence: str):
+    lowered = sentence.lower()
 
-        paragraphs = split_into_paragraphs(text)
-        para_objs = []
+    matched_skall = [t for t in SKALL_TERMS if t in lowered]
+    matched_bor = [t for t in BOR_TERMS if t in lowered]
 
-        from services.pdf_extraction import split_into_sentences
+    if matched_skall:
+        return "SKALL", matched_skall
+    if matched_bor:
+        return "BÖR", matched_bor
 
-        sentence_counter = 1
+    return None, []
 
-        for para in paragraphs:
-            sentences = split_into_sentences(para)
 
-            for sentence in sentences:
-                para_objs.append({
-                    "id": f"p{page_index+1}_{sentence_counter:03d}",
-                    "text": sentence
-                })
-                sentence_counter += 1
+def extract_requirements_from_pdf(pdf_path: str) -> Dict:
+    doc = fitz.open(pdf_path)
 
-        structured_pages.append({
-            "page": page_index + 1,
-            "paragraphs": para_objs
-        })
+    requirements = []
+    used_ocr = False
+    req_counter = 1
 
-    candidates = extract_requirement_candidates(structured_pages)
+    for page_index in range(doc.page_count):
+        page = doc.load_page(page_index)
+        page_text = page.get_text().strip()
+        source = "text"
+
+        if len(page_text) < 50:
+            # OCR fallback placeholder
+            used_ocr = True
+            page_text = ""
+            source = "ocr"
+
+        sentences = split_into_sentences(page_text)
+
+        for sentence in sentences:
+            classification, matched_terms = classify_sentence(sentence)
+            if not classification:
+                continue
+
+            requirements.append({
+                "id": f"p{page_index + 1}_r{req_counter:02d}",
+                "page": page_index + 1,
+                "source": source,
+                "text": sentence,
+                "classification": classification,
+                "matched_terms": matched_terms
+            })
+            req_counter += 1
 
     return {
-        "filename": filename,
-        "page_count": len(doc),
-        "used_ocr": False,
-        "candidates": candidates
+        "page_count": doc.page_count,
+        "used_ocr": used_ocr,
+        "requirements": requirements
     }
-
-def split_into_sentences(text: str) -> list[str]:
-    """
-    Delar text i meningar på ett relativt säkert sätt
-    för svenska juridiska texter.
-    """
-    sentences = SENTENCE_SPLIT_REGEX.split(text)
-    return [s.strip() for s in sentences if len(s.strip()) > 10]
