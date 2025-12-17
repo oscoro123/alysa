@@ -12,81 +12,117 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0f172a 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
 
-<body class="bg-white text-slate-900">
+<body class="bg-white text-slate-900 selection:bg-indigo-100">
 
-    <header class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+    <header
+        class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-50">
         <div class="flex items-center gap-3">
-            <a href="index.html" class="hover:opacity-80 transition">
-                <img src="./alysa-logo.png" alt="Alysa" class="h-8 w-auto" />
+            <a href="index.html" class="transition hover:opacity-80">
+                <img src="./alysa-logo.png" alt="Alysa Logo" class="h-8 w-auto" />
             </a>
         </div>
         <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
             <a href="index.html#how" class="hover:text-slate-900">Hur det fungerar</a>
             <a href="index.html#why" class="hover:text-slate-900">Varför Alysa</a>
-            <a href="about.html" class="text-indigo-600">Om oss</a>
+            <a href="about.html" class="text-indigo-600 font-semibold">Om oss</a>
         </nav>
         <div class="flex items-center gap-4">
-            <button
-                class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-indigo-600 transition">
+            <a href="auth.html" class="text-sm font-medium text-slate-600 hover:text-slate-900">Logga in</a>
+            <a href="auth.html"
+                class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-indigo-600 transition shadow-md">
                 Skapa konto
-            </button>
+            </a>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-6 py-20">
-        <span class="text-indigo-600 font-semibold tracking-wide uppercase text-sm">Vår vision</span>
-        <h1 class="text-4xl md:text-5xl font-extrabold mt-4 mb-8 tracking-tight">Vi bygger framtidens beslutsstöd för
-            byggsektorn</h1>
-
-        <div class="prose prose-slate lg:prose-lg max-w-none text-slate-600 leading-relaxed space-y-6">
-            <p>
-                Alysa grundades 2025 med ett tydligt mål: att eliminera det manuella sökandet i massiva dokumentmängder
-                som sinkar byggprojekt och skapar onödiga risker.
-            </p>
-            <p>
-                Vi vet att byggbranschen är fylld av teknisk expertis, men att värdefull tid ofta går förlorad på att
-                tolka AF-delar, rumsbeskrivningar och tekniska krav manuellt. Genom att kombinera avancerad AI-teknologi
-                med djup förståelse för branschens juridik och processer, ger Alysa entreprenörer superkrafter att se
-                det finstilta på sekunder.
-            </p>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-12 mt-16">
-            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100">
-                <h3 class="font-bold text-xl mb-3">Innovation</h3>
-                <p class="text-slate-500 text-sm leading-relaxed">Vi pushar gränserna för vad AI kan göra i en bransch
-                    som traditionellt sett varit pappersintensiv.</p>
-            </div>
-            <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100">
-                <h3 class="font-bold text-xl mb-3">Transparens</h3>
-                <p class="text-slate-500 text-sm leading-relaxed">AI ska inte vara en "svart låda". Vi visar alltid
-                    källan i originaldokumentet för varje identifierat krav.</p>
+    <main class="max-w-5xl mx-auto px-6 py-20">
+        <div class="mb-24">
+            <span class="text-indigo-600 font-semibold tracking-wide uppercase text-sm italic tracking-widest">Vår
+                resa</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mt-4 mb-10 tracking-tight leading-tight">
+                Vi föddes ur frustrationen över <span class="gradient-text">pappersarbetet.</span>
+            </h1>
+            <div class="grid md:grid-cols-2 gap-12 text-lg text-slate-600">
+                <div class="space-y-6">
+                    <p class="font-semibold text-slate-900">[INSTRUKTION: Din story här...]</p>
+                    <p>Vi såg hur erfarna projektledare satt sena kvällar för att manuellt pricka av krav. Det var
+                        ineffektivt.</p>
+                </div>
+                <div class="space-y-6">
+                    <p>[INSTRUKTION: Din vision här...]</p>
+                    <p>Vårt mål är att göra Alysa till standardverktyget för kontroll och administration.</p>
+                </div>
             </div>
         </div>
 
-        <section class="mt-24 text-center border-t border-slate-100 pt-16">
-            <h2 class="text-2xl font-bold mb-4">Vill du veta mer eller samarbeta?</h2>
-            <p class="text-slate-500 mb-8">Vi letar alltid efter innovativa partners och tidiga användare.</p>
-            <a href="mailto:hello@alysa.ai"
-                class="text-indigo-600 font-semibold text-lg hover:underline underline-offset-4">
-                hello@alysa.ai
-            </a>
+        <section class="mb-32">
+            <h2 class="text-3xl font-bold mb-12">Människorna bakom Alysa</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="group">
+                    <div
+                        class="aspect-square bg-slate-100 rounded-3xl mb-4 overflow-hidden grayscale hover:grayscale-0 transition duration-500">
+                        <div class="w-full h-full flex items-center justify-center text-slate-400 italic text-xs">[Bild]
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-xl uppercase">Namn Namnsson</h3>
+                    <p class="text-indigo-600 text-sm font-medium uppercase">Grundare & VD</p>
+                </div>
+                <div class="group">
+                    <div
+                        class="aspect-square bg-slate-100 rounded-3xl mb-4 overflow-hidden grayscale hover:grayscale-0 transition duration-500">
+                        <div class="w-full h-full flex items-center justify-center text-slate-400 italic text-xs">[Bild]
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-xl uppercase">Namn Namnsson</h3>
+                    <p class="text-indigo-600 text-sm font-medium uppercase">Grundare & CTO</p>
+                </div>
+                <div
+                    class="bg-indigo-50 border border-indigo-100 rounded-3xl flex flex-col items-center justify-center p-8 text-center">
+                    <p class="font-bold text-indigo-900 mb-2">Frågor?</p>
+                    <a href="mailto:hello@alysa.ai"
+                        class="text-base font-bold text-indigo-600 hover:text-indigo-800 transition">hello@alysa.ai</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-slate-900 rounded-[3rem] p-12 md:p-20 text-white relative overflow-hidden">
+            <div class="relative z-10 grid md:grid-cols-3 gap-12 text-center">
+                <div>
+                    <p class="text-4xl font-extrabold mb-2">2025</p>
+                    <p class="text-slate-400 text-sm uppercase">Grundat</p>
+                </div>
+                <div>
+                    <p class="text-4xl font-extrabold mb-2">100%</p>
+                    <p class="text-slate-400 text-sm uppercase">Fokus</p>
+                </div>
+                <div>
+                    <p class="text-4xl font-extrabold mb-2">AI-First</p>
+                    <p class="text-slate-400 text-sm uppercase">Teknik</p>
+                </div>
+            </div>
         </section>
     </main>
 
-    <footer class="mt-20 border-t border-slate-100">
-        <div class="max-w-7xl mx-auto px-6 py-10 flex justify-between items-center">
-            <p class="text-sm text-slate-500">© 2025 Alysa. Baserade i Stockholm.</p>
-            <div class="flex gap-6 text-sm text-slate-500">
-                <a href="index.html" class="hover:text-slate-900 transition">Hem</a>
-                <a href="#" class="hover:text-slate-900 transition">LinkedIn</a>
+    <footer class="border-t border-slate-100 bg-white">
+        <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-8">
+            <a href="index.html">
+                <img src="./alysa-logo.png" alt="Alysa" class="h-6 w-auto grayscale opacity-70" />
+            </a>
+            <div class="flex gap-10 text-sm font-medium text-slate-500">
+                <a href="about.html" class="text-slate-900 transition">Om oss</a>
+                <a href="mailto:hello@alysa.ai" class="hover:text-slate-900 font-semibold text-indigo-600">Kontakt</a>
             </div>
         </div>
     </footer>
-
 </body>
 
 </html>
