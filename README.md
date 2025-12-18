@@ -20,3 +20,5 @@ Frontend körs genom att öppna index.html i webbläsaren och kommunicerar då m
 Projektet är i ett stabilt tidigt skede och utgör grunden för kommande AI-baserad kravanalys och juridisk granskning.
 
 Länk: https://gupr.github.io/alysa
+
+https://github.com/oscoro123/Alysa_mvp
